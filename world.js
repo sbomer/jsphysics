@@ -46,7 +46,7 @@ World.prototype = {
 	start: function() {
 		var w = this;
 		var f = function() { w.update(); };
-		this.interval = window.setInterval(f, 100*this.dt); //time in ms
+		this.interval = window.setInterval(f, 1000 * this.dt); //time in ms
 		this.listen();
 	},
 	stop: function() {

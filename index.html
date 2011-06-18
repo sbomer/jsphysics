@@ -11,9 +11,14 @@
 			overflow: hidden;
 			height: 100%;
 		}
-		canvas {
+		#physics {
 			width: 100%;
 			height: 100%;
+		}
+		#simulation {
+			position: absolute;
+			bottom: 0;
+			right: 0;
 		}
 	</style>
 	<script type="text/javascript" src="vector.js"></script>
@@ -22,6 +27,14 @@
 </head>
 <body>
 	<canvas id="physics"></canvas>
+	
+	<form>
+		<select id="simulation">
+			<option value="random">random particles</option>
+			<option value="earth">earth and moon</option>
+		</select>
+	</form>
+	
 	<script type="text/javascript" src="physics.js"></script>
 </body>
 </html>

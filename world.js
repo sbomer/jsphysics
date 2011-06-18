@@ -3,13 +3,13 @@ function World(id) {
 	this.canvas.width = this.canvas.offsetWidth;
 	this.canvas.height = this.canvas.offsetHeight;
 	this.context = this.canvas.getContext('2d');
-	this.scale = 40; //pixels per meter
+	this.scale = 40; //pixels per meter, larger zooms in
 	this.width = this.canvas.width / this.scale;
 	this.height = this.canvas.height / this.scale;
 	this.framerate = 45; //frames per second
 	this.dt = 1 / this.framerate; //seconds per frame
 	this.shapes = [];
-	this.G = 6.67e-11;
+	this.G = 6.673e-11;
 }
 World.prototype = {
 	add: function(shape) {

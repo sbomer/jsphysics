@@ -6,7 +6,7 @@ function World(id) {
 	this.scale = 40; //pixels per meter
 	this.width = this.canvas.width / this.scale;
 	this.height = this.canvas.height / this.scale;
-	this.framerate = 30; //frames per second
+	this.framerate = 45; //frames per second
 	this.dt = 1 / this.framerate; //seconds per frame
 	this.shapes = [];
 }
@@ -47,7 +47,6 @@ World.prototype = {
 		var w = this;
 		var f = function() { w.update(); };
 		this.interval = window.setInterval(f, 1000 * this.dt); //time in ms
-		this.listen();
 	},
 	stop: function() {
 		clearInterval(this.interval);

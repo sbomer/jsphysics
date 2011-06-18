@@ -17,5 +17,25 @@ Vector.prototype = {
 			sum += this.get(i)*this.get(i);
 		}
 		return Math.sqrt(sum);
+	},
+	plus: function(v) {
+		var u = new Vector();
+		for(var i = 0, j = this.size(); i < j; i++) {
+			u.set(i, this.get(i) + v.get(i));
+		}
+		return u;
+	},
+	times: function(c) {
+		var u = new Vector();
+		for(var i = 0, j = this.size(); i < j; i++) {
+			u.set(i, c*this.get(i));
+		}
+		return u;
+	},
+	minus: function(v) {
+		return this.plus(v.times(-1));
 	}
 }
+
+var v = new Vector([3,4]);
+

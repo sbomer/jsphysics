@@ -1,4 +1,4 @@
-function World(id) {
+function World(id, scale) {
 	this.canvas = document.getElementById(id);
 	this.canvas.width = this.canvas.offsetWidth;
 	this.canvas.height = this.canvas.offsetHeight;

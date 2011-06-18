@@ -8,6 +8,16 @@ Vector.prototype = {
 	set: function(i, x) {
 		this.elements[i] = x;
 	},
+	join: function(v) {
+		var u = new Vector();
+		u.elements = this.elements.concat(v.elements);
+		return u;
+	},
+	cut: function(start, length) {
+		var u = new Vector();
+		u.elements = this.elements.slice(start, start+length);
+		return u;
+	},
 	size: function() {
 		return this.elements.length;
 	},
@@ -41,7 +51,7 @@ Vector.prototype = {
 	normal: function() {
 		return this.times(1/this.length());
 	},
-	angleTo: function(v) {
+	angle: function(v) {
 		return Math.acos(this.dot(v)/this.length()/v.length());
 	}
 }

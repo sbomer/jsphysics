@@ -9,6 +9,7 @@ function World(id) {
 	this.framerate = 45; //frames per second
 	this.dt = 1 / this.framerate; //seconds per frame
 	this.shapes = [];
+	this.G = 6.67e-11;
 }
 World.prototype = {
 	add: function(shape) {
@@ -23,7 +24,7 @@ World.prototype = {
 	},
 	draw: function() {
 		for(var i = 0; i < this.shapes.length; i++) {
-			this.shapes[i].draw();
+			this.get(i).draw();
 		}
 	},
 	clear: function() {
@@ -38,7 +39,7 @@ World.prototype = {
 		var w = this;
 		var s = this.scale;
 		var f = function(event) {
-			var p = new Vector(event.x/s-w.width/2, w.height/2-event.y/s, 0);
+			var p = new Vector(event.offsetX/s-w.width/2, w.height/2-event.offsetY/s);
 			w.add(new Shape(p));
 		};
 		this.canvas.addEventListener("click", f, false);

@@ -8,4 +8,5 @@ for(var counter = 0; counter < 5; counter++) {
 }
 w.draw();
 w.listen();
+w.update();
 w.start();

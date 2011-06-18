@@ -1,5 +1,5 @@
 function Vector(elements) {
-	this.elements = elements || [];
+	this.elements = Array.prototype.slice.call(arguments) || [];
 }
 Vector.prototype = {
 	get: function(i) {

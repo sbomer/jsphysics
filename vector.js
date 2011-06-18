@@ -36,6 +36,3 @@ Vector.prototype = {
 		return this.plus(v.times(-1));
 	}
 }
-
-var v = new Vector([3,4]);
-

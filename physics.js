@@ -1,5 +1,5 @@
 var w = new World('physics');
-for(var i = 0; i < 10; i++) {
+for(var i = 0; i < 5; i++) {
 	var p = new Vector(w.width*(Math.random()-0.5), w.height*(Math.random()-0.5));
 	var direction = Math.random()*2*Math.PI;
 	var speed = 1;

@@ -4,7 +4,11 @@ function Shape(position, velocity) {
 }
 Shape.prototype = {
 	force: function() {
-		return new Vector(0, -1);
+		var f = new Vector(0, 0);
+		for(var i = 0, j = w.size(); i < j; i++) {
+			
+		}
+		return f;
 	},
 	move: function(dt) {
 		this.velocity = this.velocity.plus(this.force().times(dt));

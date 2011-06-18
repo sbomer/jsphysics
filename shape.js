@@ -5,7 +5,7 @@ function Shape(position, velocity) {
 Shape.prototype = {
 	force: function() {
 		var f = new Vector(0, 0);
-		for(var i = 0, j = w.size(); i < j; i++) {
+		for(var i = 0, j = this.world.size(); i < j; i++) {
 			
 		}
 		return f;
@@ -15,12 +15,13 @@ Shape.prototype = {
 		this.position = this.position.plus(this.velocity.times(dt));
 	},
 	draw: function() {
-		var p = this.position.plus(w.origin);
-		var s = this.world.scale;
-		var o = this.world.origin;
-		var c = this.world.context;
+		var r = 10;
+		var p = this.position;
+		var w = this.world;
+		var s = w.scale;
+		var c = w.context;
 		c.beginPath();
-		c.arc(s*p.get(0), s*(w.height-p.get(1)), 10, 2*Math.PI, false);
+		c.arc(s*(p.get(0)+w.width/2), s*(w.height/2-p.get(1)), r, 2*Math.PI, false);
 		c.fill();
 	}
 }

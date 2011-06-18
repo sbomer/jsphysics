@@ -6,8 +6,7 @@ function World(id) {
 	this.scale = 40; //pixels per meter
 	this.width = this.canvas.width / this.scale;
 	this.height = this.canvas.height / this.scale;
-	this.origin = new Vector(this.width/2, this.height/2);
-	this.framerate = 45; //frames per seconds
+	this.framerate = 30; //frames per second
 	this.dt = 1 / this.framerate; //seconds per frame
 	this.shapes = [];
 }
@@ -18,7 +17,8 @@ World.prototype = {
 	},
 	move: function(dt) {
 		for(var i = 0; i < this.shapes.length; i++) {
-			this.shapes[i].move(dt);
+			var s = this.shapes[i];
+			s.move(dt);
 		}
 	},
 	draw: function() {
@@ -35,11 +35,10 @@ World.prototype = {
 		this.draw();
 	},
 	listen: function() {
+		var w = this;
 		var s = this.scale;
-		var o = this.origin;
-		var h = this.height;
 		var f = function(event) {
-			var p = new Vector(event.x/s-o.get(0), h-event.y/s-o.get(1));
+			var p = new Vector(event.x/s-w.width/2, w.height/2-event.y/s, 0);
 			w.add(new Shape(p));
 		};
 		this.canvas.addEventListener("click", f, false);
@@ -49,6 +48,9 @@ World.prototype = {
 		var f = function() { w.update(); };
 		this.interval = window.setInterval(f, 100*this.dt); //time in ms
 		this.listen();
+	},
+	stop: function() {
+		clearInterval(this.interval);
 	},
 	get: function(i) {
 		return this.shapes[i];

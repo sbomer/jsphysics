@@ -1,13 +1,14 @@
-function World(id, scale) {
+function World(id, scale, speed) {
 	this.canvas = document.getElementById(id);
 	this.canvas.width = this.canvas.offsetWidth;
 	this.canvas.height = this.canvas.offsetHeight;
 	this.context = this.canvas.getContext('2d');
-	this.scale = 40; //pixels per meter, larger zooms in
+	this.scale = scale || 40; //pixels per meter, larger zooms in
 	this.width = this.canvas.width / this.scale;
 	this.height = this.canvas.height / this.scale;
 	this.framerate = 45; //frames per second
-	this.dt = 1 / this.framerate; //seconds per frame
+	this.speed = speed || 1; //larger moves faster
+	this.dt = this.speed / this.framerate; //seconds per frame
 	this.shapes = [];
 	this.G = 6.673e-11;
 }
@@ -32,7 +33,7 @@ World.prototype = {
 	},
 	update: function() {
 		this.move(this.dt);
-		this.clear();
+		//this.clear();
 		this.draw();
 	},
 	listen: function() {
@@ -47,7 +48,7 @@ World.prototype = {
 	start: function() {
 		var w = this;
 		var f = function() { w.update(); };
-		this.interval = window.setInterval(f, 1000 * this.dt); //time in ms
+		this.interval = window.setInterval(f, 1000 / this.framerate); //ms per frame
 	},
 	stop: function() {
 		clearInterval(this.interval);

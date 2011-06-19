@@ -26,7 +26,7 @@ Shape.prototype = {
 		return f;
 	},
 	move: function(dt) {
-		this.velocity = this.velocity.plus(this.force().times(dt));
+		this.velocity = this.velocity.plus(this.force().times(dt/this.mass));
 		this.position = this.position.plus(this.velocity.times(dt));
 	},
 	draw: function() {

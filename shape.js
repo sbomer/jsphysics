@@ -5,12 +5,12 @@ function Shape(position, velocity, mass) {
 	this.radius = Math.pow(this.mass*3/4/Math.PI, 1/3);
 }
 Shape.prototype = {
-	force: function() {
+	acceleration: function() {
 		var f = new Vector(0, 0);
 		if(this.world.G > 0) {
 			f = f.plus(this.gravity());
 		}
-		return f;
+		return f.times(1/this.mass);
 	},
 	gravity: function() {
 		var f = new Vector(0, 0);
@@ -25,10 +25,6 @@ Shape.prototype = {
 		}
 		return f;
 	},
-	move: function(dt) {
-		this.velocity = this.velocity.plus(this.force().times(dt/this.mass));
-		this.position = this.position.plus(this.velocity.times(dt));
-	},
 	draw: function() {
 		var p = this.position;
 		var w = this.world;
@@ -38,11 +34,14 @@ Shape.prototype = {
 		c.arc(s*(p.get(0)+w.width/2), s*(w.height/2-p.get(1)), s*this.radius, 2*Math.PI, false);
 		c.fill();
 	},
-	getState: function(s) {
+	getState: function() {
 		return this.position.join(this.velocity);
 	},
 	setState: function(s) {
 		this.position = s.cut(0, this.position.size());
 		this.velocity = s.cut(this.position.size(), this.velocity.size());
+	},
+	derivative: function() {
+		return this.velocity.join(this.acceleration());
 	}
 }

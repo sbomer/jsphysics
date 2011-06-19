@@ -27,6 +27,27 @@ function populate() {
 		w.add(moon);
 	}
 	
+	if(sim.value == 'circle') {
+		w = new World(tag);
+		var n = 7;
+		var r = 5;
+		var m = 1e12;
+		for(var i = 0; i < n; i++) {
+			var theta = i*2*Math.PI/n;
+			var x = r*Math.cos(theta);
+			var y = r*Math.sin(theta);
+			var s = new Shape(new Vector(x, y), new Vector(0, 0), m);
+			s.radius = 0.5;
+			w.add(s);
+		}
+		var v = Math.sqrt(r*w.get(0).acceleration().length());
+		for(var i = 0; i < n; i++) {
+			var theta = i*2*Math.PI/n;
+			w.get(i).velocity = new Vector(-v*Math.sin(theta), v*Math.cos(theta));
+		}
+		
+	}
+	
 	w.listen();
 	w.start();
 }

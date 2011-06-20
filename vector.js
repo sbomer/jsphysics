@@ -21,18 +21,19 @@ Vector.prototype = {
 	size: function() {
 		return this.elements.length;
 	},
+	each: function(f) {
+		for(var i = 0, j = this.size(); i < j; i++) {
+			f(i, this.get(i));
+		}
+	},
 	plus: function(v) {
 		var u = new Vector();
-		for(var i = 0, j = this.size(); i < j; i++) {
-			u.set(i, this.get(i) + v.get(i));
-		}
+		this.each(function(i, e) { u.set(i, e + v.get(i)); });
 		return u;
 	},
 	times: function(c) {
 		var u = new Vector();
-		for(var i = 0, j = this.size(); i < j; i++) {
-			u.set(i, c*this.get(i));
-		}
+		this.each(function(i, e) { u.set(i, c*e); });
 		return u;
 	},
 	minus: function(v) {
@@ -40,9 +41,7 @@ Vector.prototype = {
 	},
 	dot: function(v) {
 		var sum = 0;
-		for(var i = 0, j = this.size(); i < j; i++) {
-			sum += this.get(i) * v.get(i);
-		}
+		this.each(function(i, e) { sum += e * v.get(i) });
 		return sum;
 	},
 	length: function() {

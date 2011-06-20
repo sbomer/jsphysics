@@ -47,6 +47,25 @@ function populate() {
 		}
 		
 	}
+
+	if(sim.value == 'orbit') {
+		w = new World(tag);
+		w.move = function(h) {
+			for(var i = 0, j = this.size(); i < j; i++) {
+				var s = this.get(i);
+				s.move(h);
+			}
+		};
+		var r = 5;
+		var center = new Shape(new Vector(0, 0), new Vector(0, 0), 1e12);
+		w.add(center);
+		center.radius = 2;
+		var outside = new Shape(new Vector(r, 0), new Vector(0, 0), 1);
+		w.add(outside);
+		outside.radius = 0.5;
+		var v = Math.sqrt(r*outside.acceleration().length());
+		outside.velocity = new Vector(0, v);
+	}
 	
 	w.listen();
 	w.start();

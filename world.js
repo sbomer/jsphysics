@@ -17,43 +17,21 @@ World.prototype = {
 		this.shapes.push(shape);
 		shape.world = this;
 	},
+	each: function(f) {
+		for(var i = 0, j = this.size(); i < j; i++) {
+			f(this.get(i));
+		}
+	},
 	move: function(h) {
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			s.old = s.getState();
-		}
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			s.k1 = s.derivative();
-		}
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			s.setState(s.old.plus(s.k1.times(h/2)));
-		}
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			s.k2 = s.derivative();
-		}
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			s.setState(s.old.plus(s.k2.times(h/2)));
-		}
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			s.k3 = s.derivative();
-		}
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			s.setState(s.old.plus(s.k3.times(h)));
-		}
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			s.k4 = s.derivative();
-		}
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(h/6)));
-		}
+		this.each(function(s) { s.old = s.getState(); });
+		this.each(function(s) { s.k1 = s.derivative(); });
+		this.each(function(s) { s.setState(s.old.plus(s.k1.times(h/2))); });
+		this.each(function(s) { s.k2 = s.derivative(); });
+		this.each(function(s) { s.setState(s.old.plus(s.k2.times(h/2))); });
+		this.each(function(s) { s.k3 = s.derivative(); });
+		this.each(function(s) { s.setState(s.old.plus(s.k3.times(h))); });
+		this.each(function(s) { s.k4 = s.derivative(); });
+		this.each(function(s) { s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(h/6))); });
 	},
 	draw: function() {
 		for(var i = 0, j = this.size(); i < j; i++) {

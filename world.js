@@ -50,8 +50,8 @@ World.prototype = {
 		var w = this;
 		var s = this.scale;
 		var add = function(event) {
-			var x = event.pageX-w.offset()[0]-w.canvas.clientLeft;
-			var y = event.pageY-w.offset()[1]-w.canvas.clientTop;
+			var x = event.pageX-w.offset().x-w.canvas.clientLeft;
+			var y = event.pageY-w.offset().y-w.canvas.clientTop;
 			var p = new Vector(x/s-w.width/2, w.height/2-y/s);
 			w.add(new Shape(p));
 		};
@@ -84,11 +84,11 @@ World.prototype = {
 	},
 	offset: function() {
 		var c = this.canvas;
-		var x = y = 0;
+		var offsetX = offsetY = 0;
 		do {
-			x += c.offsetLeft;
-			y += c.offsetTop;
+			offsetX += c.offsetLeft;
+			offsetY += c.offsetTop;
 		} while(c = c.offsetParent);
-		return [x, y];
+		return { x: offsetX, y: offsetY };
 	}
 }

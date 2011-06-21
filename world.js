@@ -19,6 +19,7 @@ World.prototype = {
 		shape.world = this;
 	},
 	each: function(f) {
+		var w = this;
 		for(var i = 0, j = this.size(); i < j; i++) {
 			f(this.get(i));
 		}
@@ -33,36 +34,49 @@ World.prototype = {
 		this.each(function(s) { s.setState(s.old.plus(s.k3.times(h))); });
 		this.each(function(s) { s.k4 = s.derivative(); });
 		this.each(function(s) { s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(h/6))); });
-		if(this.collides()) {
-			var pair = this.collides();
-			var s = pair[0];
-			var o = pair[1];
-			var j = this.impulse(s, o);
-			s.velocity = s.velocity.plus(j.times(1/s.mass));
-			o.velocity = o.velocity.minus(j.times(1/o.mass));
-		}
+	},
+	collide: function() {
+		this.each(function(s) {
+			s.collides = false;
+			s.j = new Vector(0, 0);
+			w.each(function(o) {
+				if(o != s && s.intersects(o)) {
+					s.collides = true;
+					s.j = s.j.plus(w.impulse(s, o));
+				}
+			});
+		});
+		this.each(function(s) {
+			if(s.collides) {
+				s.velocity = s.velocity.plus(s.j.times(1/s.mass));
+			}
+		});
+	},
+	bound: function() {
+		this.each(function(s) {
+			var p = s.position;
+			var v = s.velocity;
+			var r = s.radius;
+			if(p.get(0)-r < -w.width/2 || p.get(0)+r > w.width/2) {
+				v.set(0, -v.get(0));
+			}
+			if(p.get(1)-r < -w.height/2 || p.get(1)+r > w.height/2) {
+				v.set(1, -v.get(1));
+			}
+		});
 	},
 	draw: function() {
-		for(var i = 0, j = this.size(); i < j; i++) {
-			this.get(i).draw();
-		}
+		this.each(function(s) { s.draw() });
 	},
 	clear: function() {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	},
 	update: function() {
 		this.move(this.dt);
+		this.collide();
+		this.bound();
 		this.clear();
 		this.draw();
-	},
-	collides: function() {
-		for(var i = 0, j = this.size(); i < j; i++) {
-			var s = this.get(i);
-			if(s.collides()) {
-				return [s, s.collides()];
-			}
-		}
-		return false;
 	},
 	listen: function() {
 		var w = this;
@@ -111,7 +125,7 @@ World.prototype = {
 	},
 	impulse: function(a, b) {
 		var r = b.position.minus(a.position);
-		var v = a.velocity.plus(b.velocity).project(r);
-		return v.times(-(this.e+1)/(1/a.mass+1/b.mass));
+		var v = b.velocity.minus(a.velocity).project(r);
+		return v.times((this.e+1)/(1/a.mass+1/b.mass));
 	}
 }

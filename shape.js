@@ -47,18 +47,9 @@ Shape.prototype = {
 		s.k4 = s.derivative();
 		s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(h/6)));
 	},
-	collidesWith: function(shape) {
+	intersects: function(shape) {
 		var r = shape.position.minus(this.position).length();
 		return r < this.radius + shape.radius;
-	},
-	collides: function() {
-		for(var i = 0, j = w.size(); i < j; i++) {
-			var s = w.get(i);
-			if(s != this && this.collidesWith(s)) {
-				return s;
-			}
-		}
-		return false;
 	},
 	draw: function() {
 		var p = this.position;

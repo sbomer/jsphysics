@@ -18,7 +18,7 @@ function populate() {
 	}
 		
 	if(sim.value == 'earth') {
-		w = new World(tag, 0.5e-6, 60*60*24);
+		w = new World(tag, 1e-6, 60*60*24);
 		var earth = new Shape(new Vector(0, 0), new Vector(0, 0), 5.9736e24);
 		earth.radius = 6371e3;
 		var moon = new Shape(new Vector(384399e3, 0), new Vector(0, 1022), 7.3477e22);

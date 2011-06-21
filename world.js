@@ -1,7 +1,7 @@
 function World(id, scale, speed) {
 	this.canvas = document.getElementById(id);
-	this.canvas.width = this.canvas.offsetWidth;
-	this.canvas.height = this.canvas.offsetHeight;
+	this.canvas.width = this.canvas.clientWidth;
+	this.canvas.height = this.canvas.clientHeight;
 	this.context = this.canvas.getContext('2d');
 	this.scale = scale || 40; //pixels per meter, larger zooms in
 	this.width = this.canvas.width / this.scale;
@@ -50,7 +50,9 @@ World.prototype = {
 		var w = this;
 		var s = this.scale;
 		var add = function(event) {
-			var p = new Vector(event.offsetX/s-w.width/2, w.height/2-event.offsetY/s);
+			var x = event.pageX-w.offset()[0]-w.canvas.clientLeft;
+			var y = event.pageY-w.offset()[1]-w.canvas.clientTop;
+			var p = new Vector(x/s-w.width/2, w.height/2-y/s);
 			w.add(new Shape(p));
 		};
 		this.canvas.addEventListener("click", add, false);
@@ -79,5 +81,14 @@ World.prototype = {
 		this.canvas.height = this.canvas.offsetHeight;
 		this.width = this.canvas.width / this.scale;
 		this.height = this.canvas.height / this.scale;
+	},
+	offset: function() {
+		var c = this.canvas;
+		var x = y = 0;
+		do {
+			x += c.offsetLeft;
+			y += c.offsetTop;
+		} while(c = c.offsetParent);
+		return [x, y];
 	}
 }

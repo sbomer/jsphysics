@@ -12,7 +12,7 @@ function populate() {
 			var p = new Vector(w.width*(Math.random()-0.5), w.height*(Math.random()-0.5));
 			var speed = 2;
 			var v = new Vector(Math.random()-0.5, Math.random()-0.5).normal().times(speed);
-			var s = new Shape(p, v, .1);
+			var s = new Shape(p, v);
 			w.add(s);
 		}
 	}
@@ -50,12 +50,6 @@ function populate() {
 
 	if(sim.value == 'orbit') {
 		w = new World(tag);
-		w.move = function(h) {
-			for(var i = 0, j = this.size(); i < j; i++) {
-				var s = this.get(i);
-				s.move(h);
-			}
-		};
 		var r = 5;
 		var center = new Shape(new Vector(0, 0), new Vector(0, 0), 1e12);
 		w.add(center);

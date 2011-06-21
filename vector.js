@@ -50,7 +50,11 @@ Vector.prototype = {
 	normal: function() {
 		return this.times(1/this.length());
 	},
+	project: function(v) {
+		return v.times(this.dot(v)/v.dot(v));
+	},
 	angle: function(v) {
 		return Math.acos(this.dot(v)/this.length()/v.length());
 	}
+
 }

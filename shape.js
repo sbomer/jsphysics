@@ -2,21 +2,9 @@ function Shape(position, velocity, mass) {
 	this.position = position;
 	this.velocity = velocity || new Vector(0, 0);
 	this.mass = mass || 1;
-	this.radius = Math.pow(this.mass*3/4/Math.PI, 1/3);
+	this.radius = Math.pow(this.mass*3/4/Math.PI, 1/3); //radius of 1kg/m^3 sphere
 }
 Shape.prototype = {
-	move: function(h) {
-		var s = this;
-		s.old = s.getState();
-		s.k1 = s.derivative();
-		s.setState(s.old.plus(s.k1.times(h/2)));
-		s.k2 = s.derivative();
-		s.setState(s.old.plus(s.k2.times(h/2)));
-		s.k3 = s.derivative();
-		s.setState(s.old.plus(s.k3.times(h)));
-		s.k4 = s.derivative();
-		s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(h/6)));
-	},
 	gravity: function() {
 		var f = new Vector(0, 0);
 		var w = this.world;
@@ -46,6 +34,31 @@ Shape.prototype = {
 	setState: function(s) {
 		this.position = s.cut(0, this.position.size());
 		this.velocity = s.cut(this.position.size(), this.velocity.size());
+	},
+	move: function(h) {
+		var s = this;
+		s.old = s.getState();
+		s.k1 = s.derivative();
+		s.setState(s.old.plus(s.k1.times(h/2)));
+		s.k2 = s.derivative();
+		s.setState(s.old.plus(s.k2.times(h/2)));
+		s.k3 = s.derivative();
+		s.setState(s.old.plus(s.k3.times(h)));
+		s.k4 = s.derivative();
+		s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(h/6)));
+	},
+	collidesWith: function(shape) {
+		var r = shape.position.minus(this.position).length();
+		return r < this.radius + shape.radius;
+	},
+	collides: function() {
+		for(var i = 0, j = w.size(); i < j; i++) {
+			var s = w.get(i);
+			if(s != this && this.collidesWith(s)) {
+				return s;
+			}
+		}
+		return false;
 	},
 	draw: function() {
 		var p = this.position;

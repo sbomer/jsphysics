@@ -19,49 +19,37 @@ World.prototype = {
 		shape.world = this;
 	},
 	each: function(f) {
-		var w = this;
 		for(var i = 0, j = this.size(); i < j; i++) {
 			f(this.get(i));
 		}
 	},
 	move: function(h) {
 		this.each(function(s) { s.old = s.getState(); });
-		this.each(function(s) { s.k1 = s.derivative(); });
-		this.each(function(s) { s.setState(s.old.plus(s.k1.times(h/2))); });
-		this.each(function(s) { s.k2 = s.derivative(); });
-		this.each(function(s) { s.setState(s.old.plus(s.k2.times(h/2))); });
-		this.each(function(s) { s.k3 = s.derivative(); });
-		this.each(function(s) { s.setState(s.old.plus(s.k3.times(h))); });
-		this.each(function(s) { s.k4 = s.derivative(); });
-		this.each(function(s) { s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(h/6))); });
+		this.each(function(s) { s.k1 = s.derivative().times(h); });
+		this.each(function(s) { s.setState(s.old.plus(s.k1.times(1/2))); });
+		this.each(function(s) { s.k2 = s.derivative().times(h); });
+		this.each(function(s) { s.setState(s.old.plus(s.k2.times(1/2))); });
+		this.each(function(s) { s.k3 = s.derivative().times(h); });
+		this.each(function(s) { s.setState(s.old.plus(s.k3)); });
+		this.each(function(s) { s.k4 = s.derivative().times(h); });
+		this.each(function(s) { s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(1/6))); });
 	},
 	collide: function() {
-		this.each(function(s) {
-			s.collides = false;
-			s.j = new Vector(0, 0);
-			w.each(function(o) {
-				if(o != s && s.intersects(o)) {
-					s.collides = true;
-					s.j = s.j.plus(w.impulse(s, o));
-				}
-			});
-		});
-		this.each(function(s) {
-			if(s.collides) {
-				s.velocity = s.velocity.plus(s.j.times(1/s.mass));
-			}
-		});
+		this.each(function(s) { s.old = s.velocity; });
+		this.each(function(s) { s.j = s.impulse(); });
+		this.each(function(s) { s.velocity = s.old.plus(s.j.times(1/s.mass)); });
 	},
 	bound: function() {
+		var w = this;
 		this.each(function(s) {
 			var p = s.position;
 			var v = s.velocity;
 			var r = s.radius;
 			if(p.get(0)-r < -w.width/2 || p.get(0)+r > w.width/2) {
-				v.set(0, -v.get(0));
+				v.set(0, -w.e*v.get(0));
 			}
 			if(p.get(1)-r < -w.height/2 || p.get(1)+r > w.height/2) {
-				v.set(1, -v.get(1));
+				v.set(1, -w.e*v.get(1));
 			}
 		});
 	},
@@ -122,10 +110,5 @@ World.prototype = {
 			offsetY += c.offsetTop;
 		} while(c = c.offsetParent);
 		return { x: offsetX, y: offsetY };
-	},
-	impulse: function(a, b) {
-		var r = b.position.minus(a.position);
-		var v = b.velocity.minus(a.velocity).project(r);
-		return v.times((this.e+1)/(1/a.mass+1/b.mass));
 	}
 }

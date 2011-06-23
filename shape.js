@@ -21,14 +21,14 @@ Shape.prototype = {
 		return r.normal().times(World.G*this.mass*s.mass/r.dot(r));
 	 },
 	totalGravity: function() {
-		var f = new Vector(0, 0);
+		var f = Vector.zero;
 		var s = this;
 		var w = s.world;
 		w.pair(function(s, o) { f = f.plus(s.gravity(o)); });
 		return f;
 	},
 	acceleration: function() {
-		return this.totalGravity().times(1/this.mass);
+		return this.force.times(1/this.mass);
 	},
 	derivative: function() {
 		return this.velocity.join(this.acceleration());

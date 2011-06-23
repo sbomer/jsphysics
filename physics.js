@@ -7,7 +7,6 @@ function populate() {
 	
 	if(sim.value == 'random') {
 		w = new World(tag);
-		w.G = 0;
 		for(var counter = 0; counter < 5; counter++) {
 			var p = new Vector(w.width*(Math.random()-0.5), w.height*(Math.random()-0.5));
 			var speed = 2;
@@ -40,6 +39,7 @@ function populate() {
 			s.radius = 0.5;
 			w.add(s);
 		}
+		w.force();
 		var v = Math.sqrt(r*w.get(0).acceleration().length());
 		for(var i = 0; i < n; i++) {
 			var theta = i*2*Math.PI/n;
@@ -57,6 +57,7 @@ function populate() {
 		var outside = new Shape(new Vector(r, 0), new Vector(0, 0), 1);
 		w.add(outside);
 		outside.radius = 0.5;
+		w.force();
 		var v = Math.sqrt(r*outside.acceleration().length());
 		outside.velocity = new Vector(0, v);
 	}

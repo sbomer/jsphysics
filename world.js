@@ -23,13 +23,24 @@ World.prototype = {
 		}
 	},
 	pair: function(f) {
-		for(var i = 0, n = this.size(); i < j; i++) {
+		for(var i = 0, n = this.size(); i < n; i++) {
 			var s = this.get(i);
 			for(var j = i + 1; j < n; j++) {
 				var o = this.get(j);
 				f(s, o);
 			}
 		}
+	},
+	gravity: function() {
+		this.pair(function(b, o) {
+			var f = b.gravity(o);
+			b.force = b.force.plus(f);
+			o.force = o.force.minus(f);
+		});
+	},
+	force: function() {
+		this.each(function(s) { s.force = Vector.zero; });
+		this.gravity();
 	},
 	move: function(h) {
 		this.each(function(s) { s.old = s.getState(); });
@@ -78,6 +89,7 @@ World.prototype = {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	},
 	update: function() {
+		this.force();
 		this.move(this.dt);
 		this.collide();
 		this.bound();

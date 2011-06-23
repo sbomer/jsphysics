@@ -3,6 +3,7 @@ function Shape(position, velocity, mass) {
 	this.velocity = velocity || new Vector(0, 0);
 	this.mass = mass || 1;
 	this.radius = Math.pow(this.mass*3/4/Math.PI, 1/3); //radius of 1kg/m^3 sphere
+	this.force = Vector.zero;
 }
 Shape.prototype = {
 	getState: function() {
@@ -12,21 +13,22 @@ Shape.prototype = {
 		this.position = s.cut(0, this.position.size());
 		this.velocity = s.cut(this.position.size(), this.velocity.size());
 	},
-	gravity: function() {
+	distance: function(s) {
+		return s.position.minus(this.position);
+	},
+	gravity: function(s) {
+		var r = this.distance(s);
+		return r.normal().times(World.G*this.mass*s.mass/r.dot(r));
+	 },
+	totalGravity: function() {
 		var f = new Vector(0, 0);
 		var s = this;
 		var w = s.world;
-		w.each(function(o) {
-			if(o != s) {
-				var r = o.position.minus(s.position);
-				var g = r.normal().times(w.G*s.mass*o.mass/r.dot(r));
-				f = f.plus(g);
-			}
-		});
+		w.pair(function(s, o) { f = f.plus(s.gravity(o)); });
 		return f;
 	},
 	acceleration: function() {
-		return this.gravity().times(1/this.mass);
+		return this.totalGravity().times(1/this.mass);
 	},
 	derivative: function() {
 		return this.velocity.join(this.acceleration());
@@ -44,8 +46,9 @@ Shape.prototype = {
 		s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(1/6)));
 	},
 	intersects: function(s) {
-		var r = s.position.minus(this.position).length();
-		return r < this.radius + s.radius;
+		var d = s.position.minus(this.position);
+		var r = this.radius + s.radius;
+		return d.dot(d) < r*r;
 	},
 	impulse: function() {
 		var j = new Vector(0, 0);
@@ -60,7 +63,7 @@ Shape.prototype = {
 		});
 		return j;
 	},
-	draw: function() {
+	draw: function(canvas) {
 		var p = this.position;
 		var w = this.world;
 		var s = w.scale;

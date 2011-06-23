@@ -10,7 +10,6 @@ function World(id, scale, speed) {
 	this.speed = speed || 1; //larger moves faster
 	this.dt = this.speed / this.framerate; //seconds per frame
 	this.shapes = [];
-	this.G = 6.673e-11;
 	this.e = 1;
 }
 World.prototype = {
@@ -21,6 +20,15 @@ World.prototype = {
 	each: function(f) {
 		for(var i = 0, j = this.size(); i < j; i++) {
 			f(this.get(i));
+		}
+	},
+	pair: function(f) {
+		for(var i = 0, n = this.size(); i < j; i++) {
+			var s = this.get(i);
+			for(var j = i + 1; j < n; j++) {
+				var o = this.get(j);
+				f(s, o);
+			}
 		}
 	},
 	move: function(h) {
@@ -46,15 +54,25 @@ World.prototype = {
 			var v = s.velocity;
 			var r = s.radius;
 			if(p.get(0)-r < -w.width/2 || p.get(0)+r > w.width/2) {
+				if(p.get(0)-r < -w.width/2) {
+					p.set(0, -w.width/2+r);
+				} else {
+					p.set(0, w.width/2-r);
+				}
 				v.set(0, -w.e*v.get(0));
 			}
 			if(p.get(1)-r < -w.height/2 || p.get(1)+r > w.height/2) {
+				if(p.get(1)-r < -w.height/2) {
+					p.set(1, -w.height/2+r);
+				} else {
+					p.set(1, w.height/2-r);
+				}
 				v.set(1, -w.e*v.get(1));
 			}
 		});
 	},
 	draw: function() {
-		this.each(function(s) { s.draw() });
+		this.each(function(s) { s.draw(this.canvas) });
 	},
 	clear: function() {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -112,3 +130,4 @@ World.prototype = {
 		return { x: offsetX, y: offsetY };
 	}
 }
+World.G = 6.673e-11;

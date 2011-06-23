@@ -56,5 +56,7 @@ Vector.prototype = {
 	angle: function(v) {
 		return Math.acos(this.dot(v)/this.length()/v.length());
 	}
-
 }
+Vector.zero = new Vector(0, 0);
+Vector.i = new Vector(1, 0);
+Vector.j = new Vector(0, 1);

@@ -16,49 +16,33 @@ Shape.prototype = {
 	distance: function(s) {
 		return s.position.minus(this.position);
 	},
-	gravity: function(s) {
-		var r = this.distance(s);
-		return r.normal().times(World.G*this.mass*s.mass/r.dot(r));
-	 },
-	totalGravity: function() {
-		var f = Vector.zero;
-		var s = this;
-		var w = s.world;
-		w.pair(function(s, o) { f = f.plus(s.gravity(o)); });
-		return f;
-	},
 	acceleration: function() {
 		return this.force.times(1/this.mass);
 	},
 	derivative: function() {
 		return this.velocity.join(this.acceleration());
 	},
-	move: function(h) {
-		var s = this;
-		s.old = s.getState();
-		s.k1 = s.derivative().times(h);
-		s.setState(s.old.plus(s.k1.times(1/2)));
-		s.k2 = s.derivative().times(h);
-		s.setState(s.old.plus(s.k2.times(1/2)));
-		s.k3 = s.derivative().times(h);
-		s.setState(s.old.plus(s.k3));
-		s.k4 = s.derivative().times(h);
-		s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(1/6)));
+	gravity: function(s) {
+		var r = this.distance(s);
+		return r.normal().times(World.G*this.mass*s.mass/r.dot(r));
 	},
 	intersects: function(s) {
 		var d = s.position.minus(this.position);
 		var r = this.radius + s.radius;
 		return d.dot(d) < r*r;
 	},
-	impulse: function() {
+	impulse: function(s) {
+		var r = this.distance(s);
+		var v = s.velocity.minus(this.velocity).project(r);
+		return v.times((World.e+1)/(1/this.mass+1/s.mass));
+	},
+	totalImpulse: function() {
 		var j = new Vector(0, 0);
 		var s = this;
 		var w = s.world;
 		w.each(function(o) {
 			if(o != s && s.intersects(o)) {
-				var r = o.position.minus(s.position);
-				var v = o.velocity.minus(s.velocity).project(r);
-				j = j.plus(v.times((w.e+1)/(1/s.mass+1/o.mass)));
+				j = j.plus(s.impulse(o));
 			}
 		});
 		return j;

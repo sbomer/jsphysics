@@ -10,7 +10,6 @@ function World(id, scale, speed) {
 	this.speed = speed || 1; //larger moves faster
 	this.dt = this.speed / this.framerate; //seconds per frame
 	this.shapes = [];
-	this.e = 1;
 }
 World.prototype = {
 	add: function(shape) {
@@ -43,19 +42,23 @@ World.prototype = {
 		this.gravity();
 	},
 	move: function(h) {
+		this.force();
 		this.each(function(s) { s.old = s.getState(); });
 		this.each(function(s) { s.k1 = s.derivative().times(h); });
 		this.each(function(s) { s.setState(s.old.plus(s.k1.times(1/2))); });
+		this.force();
 		this.each(function(s) { s.k2 = s.derivative().times(h); });
 		this.each(function(s) { s.setState(s.old.plus(s.k2.times(1/2))); });
+		this.force();
 		this.each(function(s) { s.k3 = s.derivative().times(h); });
 		this.each(function(s) { s.setState(s.old.plus(s.k3)); });
+		this.force();
 		this.each(function(s) { s.k4 = s.derivative().times(h); });
 		this.each(function(s) { s.setState(s.old.plus(s.k1.plus(s.k2.plus(s.k3).times(2)).plus(s.k4).times(1/6))); });
 	},
 	collide: function() {
 		this.each(function(s) { s.old = s.velocity; });
-		this.each(function(s) { s.j = s.impulse(); });
+		this.each(function(s) { s.j = s.totalImpulse(); });
 		this.each(function(s) { s.velocity = s.old.plus(s.j.times(1/s.mass)); });
 	},
 	bound: function() {
@@ -89,7 +92,6 @@ World.prototype = {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	},
 	update: function() {
-		this.force();
 		this.move(this.dt);
 		this.collide();
 		this.bound();
@@ -143,3 +145,4 @@ World.prototype = {
 	}
 }
 World.G = 6.673e-11;
+World.e = 1;

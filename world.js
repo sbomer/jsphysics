@@ -73,7 +73,7 @@ World.prototype = {
 				} else {
 					p.set(0, w.width/2-r);
 				}
-				v.set(0, -w.e*v.get(0));
+				v.set(0, -World.e*v.get(0));
 			}
 			if(p.get(1)-r < -w.height/2 || p.get(1)+r > w.height/2) {
 				if(p.get(1)-r < -w.height/2) {
@@ -81,7 +81,7 @@ World.prototype = {
 				} else {
 					p.set(1, w.height/2-r);
 				}
-				v.set(1, -w.e*v.get(1));
+				v.set(1, -World.e*v.get(1));
 			}
 		});
 	},

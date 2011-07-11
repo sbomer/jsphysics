@@ -10,17 +10,17 @@ function populate() {
 		for(var counter = 0; counter < 5; counter++) {
 			var p = new Vector(w.width*(Math.random()-0.5), w.height*(Math.random()-0.5));
 			var speed = 2;
-			var v = new Vector(Math.random()-0.5, Math.random()-0.5).normal().times(speed);
-			var s = new Shape(p, v);
+                        var v = Vector.random(w.dimensions).times(speed);
+			var s = new Body(p, v);
 			w.add(s);
 		}
 	}
 		
 	if(sim.value == 'earth') {
 		w = new World(tag, 1e-6, 60*60*24);
-		var earth = new Shape(new Vector(0, 0), new Vector(0, 0), 5.9736e24);
+		var earth = new Body(new Vector(0, 0), new Vector(0, 0), 5.9736e24);
 		earth.radius = 6371e3;
-		var moon = new Shape(new Vector(384399e3, 0), new Vector(0, 1022), 7.3477e22);
+		var moon = new Body(new Vector(384399e3, 0), new Vector(0, 1022), 7.3477e22);
 		moon.radius = 1737e3;
 		w.add(earth);
 		w.add(moon);
@@ -35,7 +35,7 @@ function populate() {
 			var theta = i*2*Math.PI/n;
 			var x = r*Math.cos(theta);
 			var y = r*Math.sin(theta);
-			var s = new Shape(new Vector(x, y), new Vector(0, 0), m);
+			var s = new Body(new Vector(x, y), new Vector(0, 0), m);
 			s.radius = 0.5;
 			w.add(s);
 		}
@@ -51,10 +51,10 @@ function populate() {
 	if(sim.value == 'orbit') {
 		w = new World(tag);
 		var r = 5;
-		var center = new Shape(new Vector(0, 0), new Vector(0, 0), 1e12);
+		var center = new Body(new Vector(0, 0), new Vector(0, 0), 1e12);
 		w.add(center);
 		center.radius = 2;
-		var outside = new Shape(new Vector(r, 0), new Vector(0, 0), 1);
+		var outside = new Body(new Vector(r, 0), new Vector(0, 0), 1);
 		w.add(outside);
 		outside.radius = 0.5;
 		w.force();

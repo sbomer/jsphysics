@@ -1,16 +1,11 @@
 function World(id, scale, speed) {
     this.dimensions = 2;
-    this.canvas = document.getElementById(id);
-    this.canvas.width = this.canvas.clientWidth;
-    this.canvas.height = this.canvas.clientHeight;
-    this.context = this.canvas.getContext('2d');
-    this.scale = scale || 40; //pixels per meter, larger zooms in
-    this.width = this.canvas.width / this.scale;
-    this.height = this.canvas.height / this.scale;
     this.framerate = 30; //frames per second
     this.speed = speed || 1; //larger moves faster
     this.dt = this.speed / this.framerate; //seconds per frame
     this.shapes = [];
+    this.canvas = document.getElementById(id);
+    this.drawing = new Drawing(id, scale);
 }
 World.prototype = {
     add: function(shape) {
@@ -23,16 +18,16 @@ World.prototype = {
     },
     pair: function(f) {
         for(var i = 0, n = this.size(); i < n; i++) {
-            var s = this.get(i);
+            var b = this.get(i);
             for(var j = i + 1; j < n; j++) {
                 var o = this.get(j);
-                f(s, o);
+                f(b, o);
             }
         }
     },
     gravity: function() {
         this.pair(function(b, o) {
-            var f = b.gravity(o);
+            f = b.gravity(o);
             b.force = b.force.plus(f);
             o.force = o.force.minus(f);
         });
@@ -97,11 +92,11 @@ World.prototype = {
         });
     },
     draw: function() {
-        var that = this;
-        this.each(function(s) { s.draw(this.canvas, that) });
+        var d = this.drawing;
+        this.each(function(s) { s.draw(d) });
     },
     clear: function() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.drawing.clear();
     },
     update: function() {
         this.move(this.dt);
@@ -112,14 +107,15 @@ World.prototype = {
     },
     listen: function() {
         var w = this;
-        var s = this.scale;
+        var d = this.drawing;
+        var s = d.scale;
         var add = function(event) {
-            var x = event.pageX-w.offset().x-w.canvas.clientLeft;
-            var y = event.pageY-w.offset().y-w.canvas.clientTop;
-            var p = new Vector(x/s-w.width/2, w.height/2-y/s);
+            var x = event.pageX-d.offset().x-d.canvas.clientLeft;
+            var y = event.pageY-d.offset().y-d.canvas.clientTop;
+            var p = new Vector(x/s-d.width/2, d.height/2-y/s);
             w.add(new Body(p));
         };
-        this.canvas.addEventListener("click", add, false);
+        d.canvas.addEventListener("click", add, false);
 
         var resize = function() {
             w.resize();
@@ -146,15 +142,6 @@ World.prototype = {
         this.width = this.canvas.width / this.scale;
         this.height = this.canvas.height / this.scale;
     },
-    offset: function() {
-        var c = this.canvas;
-        var offsetX = offsetY = 0;
-        do {
-            offsetX += c.offsetLeft;
-            offsetY += c.offsetTop;
-        } while(c = c.offsetParent);
-        return { x: offsetX, y: offsetY };
-    }
 }
 World.G = 6.673e-11;
 World.e = 1;

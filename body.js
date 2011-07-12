@@ -3,7 +3,6 @@ function Body(position, velocity, mass) {
 	this.velocity = velocity || new Vector(0, 0);
 	this.mass = mass || 1;
 	this.radius = Math.pow(this.mass*3/4/Math.PI, 1/3); //radius of 1kg/m^3 sphere
-	this.force = Vector.zero;
         this.j = Vector.zero(2);
         this.aposition = new Vector(0); // radians
         this.avelocity = new Vector(1); // radians per second
@@ -49,21 +48,7 @@ Body.prototype = {
 		var v = s.velocity.minus(this.velocity).project(r);
 		return v.times((World.e+1)/(1/this.mass+1/s.mass));
 	},
-	draw: function(canvas, w) {
-		var p = this.position;
-		var s = w.scale;
-		var c = w.context;
-                var x = s*(p.get(0)+w.width/2);
-                var y = s*(w.height/2-p.get(1));
-                var r = s*this.radius;
-		c.beginPath();
-		c.arc(x, y, r, 2*Math.PI, false);
-                c.fill();
-                c.moveTo(x, y);
-                var angle = this.aposition.get(0);
-                c.lineTo(x+r*Math.cos(angle), y-r*Math.sin(angle));
-                c.lineWidth = 4;
-                c.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                c.stroke();
+	draw: function(drawing) {
+            drawing.drawCircle(this.position, this.aposition, this.radius);
 	}
 }

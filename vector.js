@@ -67,11 +67,11 @@ Vector.zero = function(s) {
 Vector.random = function(s) {
     var v = new Vector();
     for (var i = 0; i < s; i++) {
-        v.set(i, Math.random());
+        v.set(i, Math.random() * 2 - 1);
     }
     if (v.length() < 1) {
         return v.normal();
     } else {
-        return Vector.random();
+        return Vector.random(s);
     }
 };

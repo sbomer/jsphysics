@@ -5,7 +5,7 @@ function World(id, scale, speed) {
     this.dt = this.speed / this.framerate; //seconds per frame
     this.shapes = [];
     this.canvas = document.getElementById(id);
-    this.drawing = new Drawing(id, scale);
+    this.display = new Display(id, scale);
 }
 World.prototype = {
     add: function(shape) {
@@ -92,11 +92,11 @@ World.prototype = {
         });
     },
     draw: function() {
-        var d = this.drawing;
+        var d = this.display;
         this.each(function(s) { s.draw(d) });
     },
     clear: function() {
-        this.drawing.clear();
+        this.display.clear();
     },
     update: function() {
         this.move(this.dt);
@@ -106,21 +106,11 @@ World.prototype = {
         this.draw();
     },
     listen: function() {
-        var w = this;
-        var d = this.drawing;
-        var s = d.scale;
-        var add = function(event) {
-            var x = event.pageX-d.offset().x-d.canvas.clientLeft;
-            var y = event.pageY-d.offset().y-d.canvas.clientTop;
-            var p = new Vector(x/s-d.width/2, d.height/2-y/s);
-            w.add(new Body(p));
+        var that = this;
+        var f = function(position) {
+            that.add(new Body(position));
         };
-        d.canvas.addEventListener("click", add, false);
-
-        var resize = function() {
-            w.resize();
-        }
-        window.addEventListener("resize", resize, false);
+        this.display.setClick(f);
     },
     start: function() {
         var w = this;

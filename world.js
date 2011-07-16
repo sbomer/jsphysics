@@ -6,6 +6,7 @@ function World(id, scale, speed) {
     this.shapes = [];
     this.canvas = document.getElementById(id);
     this.display = new Display(id, scale);
+    this.G = 6.673e-11;
 }
 World.prototype = {
     add: function(shape) {
@@ -26,8 +27,10 @@ World.prototype = {
         }
     },
     gravity: function() {
+        var that = this;
         this.pair(function(b, o) {
-            f = b.gravity(o);
+            var r = b.distance(o);
+            var f = r.normal().times(that.G * b.mass * o.mass / r.dot(r));
             b.force = b.force.plus(f);
             o.force = o.force.minus(f);
         });
@@ -133,5 +136,4 @@ World.prototype = {
         this.height = this.canvas.height / this.scale;
     },
 }
-World.G = 6.673e-11;
 World.e = 1;

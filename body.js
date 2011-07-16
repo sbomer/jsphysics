@@ -34,10 +34,6 @@ Body.prototype = {
 	derivative: function() {
 		return this.velocity.join(this.acceleration()).join(this.avelocity).join(this.torque());
 	},
-	gravity: function(s) {
-		var r = this.distance(s);
-		return r.normal().times(World.G*this.mass*s.mass/r.dot(r));
-	},
 	intersects: function(s) {
 		var d = s.position.minus(this.position);
 		var r = this.radius + s.radius;

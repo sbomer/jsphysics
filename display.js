@@ -7,11 +7,15 @@ function Display(id, scale) {
 }
 Display.prototype = {
     clear: function() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        var x = this.canvas.width / this.scale;
+        var y = this.canvas.height / this.scale;
+        this.context.clearRect(-x, -y, 2 * x, 2 * y);
     },
     resize: function() {
         this.canvas.width = this.canvas.clientWidth;
         this.canvas.height = this.canvas.clientHeight;
+        this.context.translate(this.canvas.width / 2, this.canvas.height / 2);
+        this.context.scale(this.scale, -this.scale);
     },
     listen: function() {
         var that = this;
@@ -20,34 +24,44 @@ Display.prototype = {
         };
         window.addEventListener('resize', f, false);
     },
-    drawCircle: function(position, angle, radius) {
-        var c = this.context;
-        var p = this.toDisplay(position);
-        var x = p.get(0);
-        var y = p.get(1);
-        var r = this.scale * radius;
-        var a = angle.get(0);
-        c.beginPath();
-        c.arc(x, y, r, 2 * Math.PI, false);
-        c.fill();
-        c.moveTo(x, y);
-        c.lineTo(x + r * Math.cos(a), y - r * Math.sin(a));
-        c.stroke();
-    },
-    toDisplay: function(v) {
-        var x = this.canvas.width / 2 + this.scale * v.get(0);
-        var y = this.canvas.height / 2 - this.scale * v.get(1);
-        return new Vector(x, y);
-    },
-    toWorld: function(v) {
+    toPoint: function(v) {
         var x = v.get(0) - this.canvas.width / 2;
         var y = this.canvas.height / 2 - v.get(1);
         return new Vector(x, y).times(1 / this.scale);
     },
+    drawCircle: function(position, angle, radius) {
+        var c = this.context;
+        var x = position.get(0);
+        var y = position.get(1);
+        var r = radius;
+        var a = angle.get(0);
+        c.beginPath();
+        c.arc(x, y, r, 2 * Math.PI, false);
+        c.closePath();
+        c.fill();
+        c.beginPath();
+        c.moveTo(x, y);
+        c.lineTo(x + r * Math.cos(a), y - r * Math.sin(a));
+        c.closePath();
+        c.strokeStyle = new Color(255, 255, 255, 0.5).toString();
+        c.lineWidth = 4;
+        c.stroke();
+    },
+    drawSquare: function(position, angle, radius) {
+        var c = this.context;
+        var x = position.get(0);
+        var y = position.get(1);
+        var r = radius;
+        var a = angle.get(0);
+        c.beginPath();
+        c.rect(x - r, y - r, 2 * r, 2 * r);
+        c.fill();
+        c.closePath();
+    },
     getClick: function(event) {
         var x = event.pageX - this.offset().x;
         var y = event.pageY - this.offset().y;
-        return this.toWorld(new Vector(x, y));
+        return this.toPoint(new Vector(x, y));
     },
     setClick: function(f) {
         var that = this;

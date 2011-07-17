@@ -35,17 +35,19 @@ Display.prototype = {
         var y = position.get(1);
         var r = radius;
         var a = angle.get(0);
+        c.save();
+        c.translate(x, y);
+        c.rotate(a);
         c.beginPath();
-        c.arc(x, y, r, 2 * Math.PI, false);
+        c.arc(0, 0, r, 2 * Math.PI, false);
         c.closePath();
         c.fill();
         c.beginPath();
-        c.moveTo(x, y);
-        c.lineTo(x + r * Math.cos(a), y - r * Math.sin(a));
+        c.arc(0, 0, r, Math.PI, false);
         c.closePath();
-        c.strokeStyle = new Color(255, 255, 255, 0.5).toString();
-        c.lineWidth = 4;
-        c.stroke();
+        c.fillStyle = new Color(255, 255, 255, 0.5).toString();
+        c.fill();
+        c.restore();
     },
     drawSquare: function(position, angle, radius) {
         var c = this.context;
@@ -53,10 +55,14 @@ Display.prototype = {
         var y = position.get(1);
         var r = radius;
         var a = angle.get(0);
+        c.save();
+        c.translate(x, y);
+        c.rotate(a);
         c.beginPath();
-        c.rect(x - r, y - r, 2 * r, 2 * r);
-        c.fill();
+        c.rect(-r, -r, 2 * r, 2 * r);
         c.closePath();
+        c.fill();
+        c.restore();
     },
     getClick: function(event) {
         var x = event.pageX - this.offset().x;

@@ -45,6 +45,6 @@ Body.prototype = {
 		return v.times((World.e+1)/(1/this.mass+1/s.mass));
 	},
 	draw: function(display) {
-            display.drawSquare(this.position, this.angle, this.radius);
+            display.drawCircle(this.position, this.angle, this.radius);
 	}
 }

@@ -5,6 +5,15 @@ Vector.prototype = {
     get: function(i) {
         return this.elements[i];
     },
+    x: function() {
+        return this.elements[0];
+    },
+    y: function() {
+        return this.elements[1];
+    },
+    z: function() {
+        return this.elements[2];
+    },
     set: function(i, x) {
         this.elements[i] = x;
     },
@@ -47,14 +56,24 @@ Vector.prototype = {
     length: function() {
         return Math.sqrt(this.dot(this));
     },
-    normal: function() {
+    norm: function() {
         return this.times(1/this.length());
+    },
+    normal: function() {
+        if (this.size() == 2) {
+            return new Vector(-this.get(1), this.get(0));
+        }
     },
     project: function(v) {
         return v.times(this.dot(v)/v.dot(v));
     },
     angle: function(v) {
         return Math.acos(this.dot(v)/this.length()/v.length());
+    },
+    rotate: function(angle) {
+        var r = this.length();
+        var a = Math.atan(this.get(1) / this.get(0));
+        return new Vector();
     },
 };
 Vector.zero = function(s) {
@@ -70,7 +89,7 @@ Vector.random = function(s) {
         v.set(i, Math.random() * 2 - 1);
     }
     if (v.length() < 1) {
-        return v.normal();
+        return v.norm();
     } else {
         return Vector.random(s);
     }

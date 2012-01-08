@@ -7,9 +7,9 @@ function Display(id, scale) {
 }
 Display.prototype = {
     clear: function() {
-        var x = this.canvas.width / this.scale;
-        var y = this.canvas.height / this.scale;
-        this.context.clearRect(-x, -y, 2 * x, 2 * y);
+        var w = this.canvas.width / this.scale;
+        var h = this.canvas.height / this.scale;
+        this.context.clearRect(-w / 2, -h / 2, w, h);
     },
     resize: function() {
         this.canvas.width = this.canvas.clientWidth;
@@ -63,6 +63,19 @@ Display.prototype = {
         c.closePath();
         c.fill();
         c.restore();
+    },
+    drawPolygon: function(points) {
+        var c = this.context;
+        c.beginPath();
+        var begin = points[0];
+        c.moveTo(begin.get(0), begin.get(1));
+        for (var i = 1; i < points.length; i++) {
+            var point = points[i];
+            c.lineTo(point.get(0), point.get(1));
+        }
+        c.closePath();
+        c.fillStyle = 'rgb(0, 0, 0)';
+        c.fill();
     },
     getClick: function(event) {
         var x = event.pageX - this.offset().x;

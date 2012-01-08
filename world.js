@@ -30,7 +30,7 @@ World.prototype = {
         var that = this;
         this.pair(function(b, o) {
             var r = b.distance(o);
-            var f = r.normal().times(that.G * b.mass * o.mass / r.dot(r));
+            var f = r.norm().times(that.G * b.mass * o.mass / r.dot(r));
             b.force = b.force.plus(f);
             o.force = o.force.minus(f);
         });

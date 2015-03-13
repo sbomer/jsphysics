@@ -1,0 +1,6 @@
+To see example implementations and current tests, go to
+http://jsphysics.googlecode.com/hg/index.html
+
+Jsphysics relies on a number of prototypical JavaScript classes, found in vector.js, body.js, world.js, etc. Currently, the engine is capable of simulating two-dimensional objects (circles for now) under the influence of each other's gravity, using the fourth-order Runge Kutta numerical integration method; it acts as a simple n-body simulation. It uses impulse-based collision handling, with a variable coefficient of restitution.
+
+Jsphysics draws to the html5 canvas element. A new simulation is initialised with the command 'new World("id")', where "id" is the id of the canvas element to host the simulation. The eventListener handles mouse clicks by creating new objects at the click position. This position is calculated using the offsetTop/offsetLeft properties of the canvas node and its offsetParents, and the canvas node's clientTop/clientLeft. As a result, padding on the canvas element will create offsets in the listener's interpretation of mouse clicks. Canvas borders, however, cause no difficulties.
